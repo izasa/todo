@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
 
-function App() {
+
+export default function TodoApp() {
+  const [toDoList, setToDoList] = useState([]);
+  const [newItem, setNewItem] = useState("");
+
+  const addItem = () => {
+    setToDoList([...toDoList, { title: newItem, done: "" }]);
+    setNewItem("");
+  };
+
+  const setDone = (index, val) => {
+    let tempList = toDoList.map((el, i) =>
+      el.title === toDoList[index].title ? { title: el.title, done: val } : el
+    );
+    setToDoList(tempList);
+  };
+
+  const handleNewItem = (event) => setNewItem(event.target.value);
+  const deteleItem = (index) => {
+    const newArray = toDoList.filter((el, i) => i !== index);
+    setToDoList(newArray);
+  };
+
+  const listItems = toDoList.map((item, index) => (
+    <li key={index}>
+      {item.title}
+      <button onClick={() => deteleItem(index)}>Delete item </button>
+      {item.done === "" ? (
+        <>
+          <button onClick={() => setDone(index, "done")}>Set done item </button>
+          <button onClick={() => setDone(index, "not done")}>
+            Set not done
+          </button>
+        </>
+      ) : (
+        <div>{item.done}</div>
+      )}
+    </li>
+  ));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button onClick={addItem}>Add item </button>
+      <input onChange={handleNewItem} type="text" value={newItem} />
+
+      <h1>List</h1>
+      {listItems}
     </div>
   );
 }
-
-export default App;
